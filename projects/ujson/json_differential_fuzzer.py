@@ -51,7 +51,7 @@ def ClearAllIntegers(data):
   if type(data) == int:
     return 0
   if type(data) == list:
-    for i in range(0, len(data)):
+    for i in range(len(data)):
       data[i] = ClearAllIntegers(data[i])
   if type(data) == dict:
     for k, v in data:

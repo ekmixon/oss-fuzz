@@ -115,10 +115,7 @@ class Builder:  # pylint: disable=too-many-instance-attributes
   def check_fuzzer_build(self):
     """Checks the fuzzer build. Returns True on success or if config specifies
     to skip check."""
-    if not self.config.bad_build_check:
-      return True
-
-    return check_fuzzer_build(self.config)
+    return check_fuzzer_build(self.config) if self.config.bad_build_check else True
 
   def build(self):
     """Builds the image, checkouts the source (if needed), builds the fuzzers
@@ -130,10 +127,7 @@ class Builder:  # pylint: disable=too-many-instance-attributes
         self.upload_build,
         self.check_fuzzer_build,
     ]
-    for method in methods:
-      if not method():
-        return False
-    return True
+    return all(method() for method in methods)
 
   def remove_unaffected_fuzz_targets(self):
     """Removes the fuzzers unaffected by the patch."""

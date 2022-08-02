@@ -76,7 +76,7 @@ class GithubActionsFilestore(filestore.BaseFilestore):
     """Uploads |directory| as artifact with |name|."""
     name = self._get_artifact_name(name)
     with tempfile.TemporaryDirectory() as temp_dir:
-      archive_path = os.path.join(temp_dir, name + '.tar')
+      archive_path = os.path.join(temp_dir, f'{name}.tar')
       tar_directory(directory, archive_path)
       _raw_upload_directory(name, temp_dir)
 
@@ -121,7 +121,7 @@ class GithubActionsFilestore(filestore.BaseFilestore):
         logging.warning('Could not download artifact: %s.', name)
         return False
 
-      artifact_tarfile_path = os.path.join(temp_dir, name + '.tar')
+      artifact_tarfile_path = os.path.join(temp_dir, f'{name}.tar')
       if not os.path.exists(artifact_tarfile_path):
         logging.error('Artifact zip did not contain a tarfile.')
         return False
@@ -172,7 +172,7 @@ def _raw_upload_directory(name, directory):
   # Get file paths.
   artifact_paths = []
   for root, _, curr_file_paths in os.walk(directory):
-    for file_path in curr_file_paths:
-      artifact_paths.append(os.path.join(root, file_path))
+    artifact_paths.extend(
+        os.path.join(root, file_path) for file_path in curr_file_paths)
   logging.debug('Artifact paths: %s.', artifact_paths)
   return _upload_artifact_with_upload_js(name, artifact_paths, directory)

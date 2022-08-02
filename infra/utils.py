@@ -43,9 +43,7 @@ def chdir_to_root():
 def command_to_string(command):
   """Returns the stringfied version of |command| a list representing a binary to
   run and arguments to pass to it or a string representing a binary to run."""
-  if isinstance(command, str):
-    return command
-  return shlex.join(command)
+  return command if isinstance(command, str) else shlex.join(command)
 
 
 def execute(command,
@@ -170,10 +168,7 @@ def is_fuzz_target_local(file_path):
 
 def binary_print(string):
   """Prints string. Can print a binary string."""
-  if isinstance(string, bytes):
-    string += b'\n'
-  else:
-    string += '\n'
+  string += b'\n' if isinstance(string, bytes) else '\n'
   sys.stdout.buffer.write(string)
   sys.stdout.flush()
 
@@ -199,7 +194,4 @@ def remove_prefix(string, prefix):
   """Returns |string| without the leading substring |prefix|."""
   # Match behavior of removeprefix from python3.9:
   # https://www.python.org/dev/peps/pep-0616/
-  if string.startswith(prefix):
-    return string[len(prefix):]
-
-  return string
+  return string[len(prefix):] if string.startswith(prefix) else string

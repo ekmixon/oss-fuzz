@@ -115,9 +115,7 @@ class PlatformConfig(platform_config.BasePlatformConfig):
   @property
   def base_commit(self):
     """Returns the base commit to diff against (commit fuzzing)."""
-    base_commit = None
-    if self._event == 'push':
-      base_commit = self._event_data['before']
+    base_commit = self._event_data['before'] if self._event == 'push' else None
     logging.debug('base_commit: %s', base_commit)
     return base_commit
 

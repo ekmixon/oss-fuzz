@@ -122,7 +122,7 @@ class FuzzTarget:  # pylint: disable=too-many-instance-attributes
                                           os.path.basename(crash.input_path))
     shutil.copy(crash.input_path, target_reproducer_path)
 
-    bug_summary_artifact_path = target_reproducer_path + '.summary'
+    bug_summary_artifact_path = f'{target_reproducer_path}.summary'
     with open(bug_summary_artifact_path, 'w') as handle:
       handle.write(crash.stacktrace)
 
@@ -209,7 +209,7 @@ class FuzzTarget:  # pylint: disable=too-many-instance-attributes
       # https://github.com/google/oss-fuzz/issues/5383.
       shutil.rmtree(corpus_path, ignore_errors=True)
 
-    target_seed_corpus_path = self.target_path + '_seed_corpus.zip'
+    target_seed_corpus_path = f'{self.target_path}_seed_corpus.zip'
     if os.path.exists(target_seed_corpus_path):
       os.remove(target_seed_corpus_path)
 
@@ -299,11 +299,7 @@ class FuzzTarget:  # pylint: disable=too-many-instance-attributes
       return self.config.report_unreproducible_crashes
 
     logging.info('Crash is reproducible.')
-    if batch:
-      # We don't need to check if the crash is novel for batch fuzzing.
-      return True
-
-    return self.is_crash_novel(testcase, reproduce_args)
+    return True if batch else self.is_crash_novel(testcase, reproduce_args)
 
   def is_crash_type_reportable(self, testcase):
     """Returns True if |testcase| is an actual crash. If crash is a timeout or
@@ -312,15 +308,13 @@ class FuzzTarget:  # pylint: disable=too-many-instance-attributes
     testcase = os.path.basename(testcase)
     if testcase.startswith('oom-'):
       return self.config.report_ooms
-    if testcase.startswith('timeout-'):
-      return self.config.report_timeouts
-    return True
+    return self.config.report_timeouts if testcase.startswith('timeout-') else True
 
   def is_crash_novel(self, testcase, reproduce_args):
     """Returns whether or not the crash is new. A crash is considered new if it
     can't be reproduced on an older ClusterFuzz build of the target."""
     if not os.path.exists(testcase):
-      raise ReproduceError('Testcase %s not found.' % testcase)
+      raise ReproduceError(f'Testcase {testcase} not found.')
     clusterfuzz_build_dir = self.clusterfuzz_deployment.download_latest_build()
     if not clusterfuzz_build_dir:
       # Crash is reproducible on PR build and we can't test on a recent

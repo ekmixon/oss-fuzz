@@ -89,7 +89,7 @@ class BaseCi:
     logging.info('Diffing against %s.', base)
     # git diff <commit>... is equivalent to
     # git diff $(git merge-base <commit> HEAD)
-    return repo_manager_obj.get_git_diff(base + '...')
+    return repo_manager_obj.get_git_diff(f'{base}...')
 
   def get_build_command(self, host_repo_path, image_repo_path):
     """Returns the command for building the project that is run inside the

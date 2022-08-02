@@ -61,9 +61,8 @@ class GSUtilFilestore(filestore.BaseFilestore):
 
   def _get_gsutil_url(self, name, prefix_dir):
     """Returns the gsutil URL for |name| and |prefix_dir|."""
-    if not prefix_dir:
-      return posixpath.join(self._cloud_bucket, name)
-    return posixpath.join(self._cloud_bucket, prefix_dir, name)
+    return (posixpath.join(self._cloud_bucket, prefix_dir, name)
+            if prefix_dir else posixpath.join(self._cloud_bucket, name))
 
   def _upload_directory(self, name, directory, prefix, delete=False):
     gsutil_url = self._get_gsutil_url(name, prefix)

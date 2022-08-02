@@ -171,9 +171,7 @@ class GitRepoTest(BisectClangTestMixin, unittest.TestCase):
     unexpected value."""
 
     def mock_execute_impl(command, *args, **kwargs):  # pylint: disable=unused-argument
-      if command == self.test_command:
-        return returncode, '', ''
-      return 0, '', ''
+      return (returncode, '', '') if command == self.test_command else (0, '', '')
 
     with mock.patch('bisect_clang.execute', mock_execute_impl):
       with mock.patch('bisect_clang.prepare_build', mock_prepare_build_impl):
@@ -204,9 +202,7 @@ class GitRepoTest(BisectClangTestMixin, unittest.TestCase):
 
     def mock_execute_impl(command, *args, **kwargs):  # pylint: disable=unused-argument
       command_args.append(command)
-      if command == self.test_command:
-        return returncode, '', ''
-      return 0, '', ''
+      return (returncode, '', '') if command == self.test_command else (0, '', '')
 
     with mock.patch('bisect_clang.execute', mock_execute_impl):
       self.git.test_start_commit(commit, label, self.test_command)

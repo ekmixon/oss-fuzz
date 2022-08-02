@@ -31,11 +31,8 @@ def get_filestore(config):
   Raises an exception if there is no correct filestore for the platform."""
   if config.platform == config.Platform.EXTERNAL_GITHUB:
     ci_filestore = filestore.github_actions.GithubActionsFilestore(config)
-    if not config.git_store_repo:
-      return ci_filestore
-
-    return filestore.git.GitFilestore(config, ci_filestore)
-
+    return (filestore.git.GitFilestore(config, ci_filestore)
+            if config.git_store_repo else ci_filestore)
   filestore_cls = FILESTORE_MAPPING.get(config.filestore)
   if filestore_cls is None:
     raise filestore.FilestoreError('Filestore doesn\'t exist.')

@@ -116,9 +116,9 @@ def main():
         'the given range have the same behavior, bisection is not possible. ')
     return 1
   if args.type == 'regressed':
-    print('Error was introduced at commit %s' % result.commit)
+    print(f'Error was introduced at commit {result.commit}')
   elif args.type == 'fixed':
-    print('Error was fixed at commit %s' % result.commit)
+    print(f'Error was fixed at commit {result.commit}')
   return 0
 
 
@@ -215,7 +215,7 @@ def _bisect(bisect_type, old_commit, new_commit, testcase_path, fuzz_target,
     elif bisect_type == 'regressed':
       should_crash = True
     else:
-      raise BisectError('Invalid bisect type ' + bisect_type, repo_url)
+      raise BisectError(f'Invalid bisect type {bisect_type}', repo_url)
 
     expected_error = _check_for_crash(build_data.project_name, fuzz_target,
                                       testcase_path)

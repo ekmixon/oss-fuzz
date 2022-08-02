@@ -299,9 +299,5 @@ def run_fuzzers(config):  # pylint: disable=too-many-locals
     # find any bugs.
     return RunFuzzersResult.ERROR
 
-  if not fuzz_target_runner.run_fuzz_targets():
-    # We fuzzed successfully, but didn't find any bugs (in the fuzz target).
-    return RunFuzzersResult.NO_BUG_FOUND
-
-  # We fuzzed successfully and found bug(s) in the fuzz targets.
-  return RunFuzzersResult.BUG_FOUND
+  return (RunFuzzersResult.BUG_FOUND if fuzz_target_runner.run_fuzz_targets()
+          else RunFuzzersResult.NO_BUG_FOUND)

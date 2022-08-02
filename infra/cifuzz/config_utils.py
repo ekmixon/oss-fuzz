@@ -157,10 +157,8 @@ class BaseConfig:
   def platform(self):
     """Returns the platform CIFuzz is runnning on."""
     if not self.is_internal:
-      if not self.is_github:
-        return self.Platform.EXTERNAL_GENERIC_CI
-      return self.Platform.EXTERNAL_GITHUB
-
+      return (self.Platform.EXTERNAL_GITHUB
+              if self.is_github else self.Platform.EXTERNAL_GENERIC_CI)
     if self.is_github:
       return self.Platform.INTERNAL_GITHUB
     return self.Platform.INTERNAL_GENERIC_CI
